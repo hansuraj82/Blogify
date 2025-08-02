@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+    <title>Create Blog</title>
+   
+    <style>
+        body {
+            background: #f4f6f8;
+        }
+
+        .form-container {
+            max-width: 750px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            border: 2px dashed #6c757d;
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .alert-dismissible button {
+            top: 2px;
+            right: 8px;
+        }
+    </style>
+</head>
+
+<body>
+<%- include('./partials/nav') %>
+
+    <!-- Blog Form Section -->
+    <div class="container form-container">
+        <h2 class="text-center text-primary mb-4">Create a New Blog</h2>
+
+        <!-- Alert for validation -->
+        <div id="alertBox" class="alert alert-danger alert-dismissible d-none" role="alert">
+            <strong>All fields are required!</strong> Please fill in every input before submitting.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Blog Form -->
+        <form id="blogForm" action="/blog/addBlog" method="post" enctype="multipart/form-data">
+            <!-- Cover Photo -->
+            <div class="mb-3">
+                <label for="coverPhoto" class="form-label">Blog Cover Photo</label>
+                <input type="file" class="form-control" id="coverPhoto" name="coverPhoto" accept="image/*">
+                <img id="imagePreview" class="mt-3" alt="Image preview">
+            </div>
+
+            <!-- Blog Title -->
+            <div class="mb-3">
+                <label for="blogTitle" class="form-label">Blog Title</label>
+                <input type="text" class="form-control" id="blogTitle" name="title" placeholder="Enter blog title">
+            </div>
+
+            <!-- Blog Body -->
+            <div class="mb-4">
+                <label for="blogBody" class="form-label">Content</label>
+                <textarea class="form-control" id="blogBody" name="body" rows="6"
+                    placeholder="Write your blog here..."></textarea>
+            </div>
+
+            <!-- Submit -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold">Publish Blog</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+     <%- include('./partials/script') %>
+
+    <!-- Image Preview + Form Validation -->
+    <script>
+        const form = document.getElementById("blogForm");
+        const alertBox = document.getElementById("alertBox");
+        const imageInput = document.getElementById("coverPhoto");
+        const imagePreview = document.getElementById("imagePreview");
+
+        imageInput.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.style.display = "none";
+            }
+        });
+
+        form.addEventListener("submit", function (e) {
+            const title = document.getElementById("blogTitle").value.trim();
+            const body = document.getElementById("blogBody").value.trim();
+            const coverPhoto = imageInput.files.length;
+
+            if (!title || !body || !coverPhoto) {
+                e.preventDefault();
+                alertBox.classList.remove("d-none");
+                alertBox.classList.add("show");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            } else {
+                alertBox.classList.add("d-none");
+            }
+        });
+    </script>
+  
+</body>
+
+</html>

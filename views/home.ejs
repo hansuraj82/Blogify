@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+    <title>Home - Blogify</title>
+    <style>
+        .card-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            transition: 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .blog-text-preview {
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('./partials/nav') %>
+
+    <div class="container my-5">
+        <h2 class="mb-4 text-center fw-bold text-primary">Latest Blogs</h2>
+        <div class="row g-4">
+
+            <% if (blogs.length === 0) { %>
+    <div class="text-center w-100 py-5">
+        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No blogs" style="width: 150px;">
+        <h4 class="mt-3 text-secondary">No blogs posted yet.</h4>
+        <% if (locals.user) { %>
+            <a href="/blog/add-blog" class="btn btn-primary mt-3">Create your first blog</a>
+        <% } else { %>
+            <p class="mt-2">Please <a href="/user/signin">sign in</a> to add a blog.</p>
+        <% } %>
+    </div>
+<% } else { %>
+    <% blogs.forEach(blog => { %>
+        <div class="col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
+            <div class="card w-100 border-0 shadow-sm">
+                <img src="<%= blog.coverPhoto %>" class="card-img-top rounded-top" style="height: 180px; object-fit: cover;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title"><%= blog.title %></h5>
+                    <p class="card-text blog-text-preview">
+                        <%= blog.body.split(' ').slice(0, 20).join(' ') + '...' %>
+                    </p>
+                    <div class="mt-auto text-end">
+                        <a href="/blog/showBlog/<%= blog._id %>" class="btn btn-outline-primary btn-sm">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+<% } %>
+
+        </div>
+    </div>
+
+    <%- include('./partials/script') %>
+</body>
+
+</html>

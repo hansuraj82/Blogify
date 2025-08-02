@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('./partials/head') %>
+    <title>
+      <%= blog?.title || "Blog" %> - Blogify
+    </title>
+    <style>
+      .comment-box:hover {
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transition: 0.3s ease;
+      }
+
+      .author-img {
+        object-fit: cover;
+      }
+    </style>
+</head>
+
+<body>
+  <%- include('./partials/nav') %>
+
+    <% if (locals.blog) { %>
+      <div class="container my-5">
+        <!-- Blog Cover Image -->
+        <div class="text-center mb-4">
+          <img src="<%= blog.coverPhoto %>" class="img-fluid rounded-4 shadow"
+            style="max-height: 400px; object-fit: cover;">
+        </div>
+
+        <!-- Blog Title & Body -->
+        <div class="text-center">
+          <h1 class="fw-bold text-primary mb-3">
+            <%= blog.title %>
+          </h1>
+          <p class="fs-5 lh-lg text-dark px-md-5">
+            <%= blog.body %>
+          </p>
+        </div>
+
+        <!-- Author Section -->
+        <div class="d-flex justify-content-center align-items-center text-muted gap-2 mt-4">
+          <img src="<%= blog.createdBy.profile %>" class="rounded-circle author-img" width="40" height="40"
+            alt="<%= blog.createdBy.fullName %>">
+          <span class="fst-italic">Written by <strong>
+              <%= blog.createdBy.fullName %>
+            </strong></span>
+        </div>
+      </div>
+      <% } %>
+        <% if (locals.comments && comments.length> 0) { %>
+
+          </div>
+
+          <div class="container mb-5">
+            <h3 class="fw-bold mb-4 border-bottom pb-2">Comments (<%= comments.length %>)</h3>
+
+            <% comments.forEach(commentElement=> { %>
+              <div class="comment-box border rounded-3 p-3 mb-3 shadow-sm bg-white">
+                <div class="d-flex align-items-center">
+                  <img src="<%= commentElement.commentedBy.profile %>" alt="profile" class="rounded-circle me-3"
+                    width="40" height="40">
+                  <div>
+                    <strong class="text-dark">
+                      <%= commentElement.commentedBy.fullName %>
+                    </strong>
+                    <p class="mb-0 text-secondary">
+                      <%= commentElement.comment %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+          </div>
+          <% } %>
+
+            <!-- Comment Form -->
+            <% if (locals.user) { %>
+              <div class="container mb-5">
+                <form action="/blogComment/comment/<%= blog._id %>" method="post"
+                  class="d-flex flex-column flex-md-row align-items-start gap-3">
+                  <input type="text" name="comment" required placeholder="Write a comment..."
+                    class="form-control p-3 border border-primary">
+                  <button type="submit" class="btn btn-primary px-4 my-2">Post</button>
+                </form>
+              </div>
+              <% } else { %>
+                <div class="container text-center text-muted mb-5">
+                  <p><a href="/user/signin" class="text-decoration-none fw-bold text-primary">Sign in</a> to post a
+                    comment.</p>
+                </div>
+                <% } %>
+
+                  <!-- Back to Home Button -->
+                  <div class="text-center my-5">
+                    <a href="/" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill">← Back to Home</a>
+                  </div>
+
+                  <%- include('./partials/script') %>
+</body>
+
+</html>
